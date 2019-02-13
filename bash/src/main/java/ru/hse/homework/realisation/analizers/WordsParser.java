@@ -1,5 +1,6 @@
 package ru.hse.homework.realisation.analizers;
 
+import org.apache.commons.cli.*;
 import ru.hse.homework.interfaces.execution.Task;
 import ru.hse.homework.interfaces.analizers.Parser;
 import ru.hse.homework.realisation.execution.tasks.*;
@@ -8,6 +9,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class WordsParser implements Parser {
+    Options options;
+    CommandLineParser parser = new DefaultParser();
+    CommandLine cmd;
+
+    public WordsParser() {
+        options = new Options();
+        Option i = new Option("i", "i", false, "");
+        i.setRequired(false);
+        options.addOption(i);
+        Option w = new Option("w", "w", false, "");
+        w.setRequired(false);
+        options.addOption(w);
+        Option A = new Option("A", "A", true, "");
+        i.setRequired(false);
+        options.addOption(A);
+    }
+
     public Task[] getTasks(String[] words) throws Exception {
         if (words.length == 0)
             throw new ParserException("Wrong words number in parser");
@@ -33,6 +51,13 @@ public class WordsParser implements Parser {
                 case Exit.COMMAND:
                     task = new Exit();
                     break;
+                case Grep.COMMAND:
+                    task = new Grep();
+                    ArrayList<String> grep_args = new ArrayList<>();
+                    cmd = parser.parse(options, args);
+                    if (cmd.hasOption("i")) {
+                        grep_args.add("i");
+                    }
                 default:
                     throw new Exception("Undefind command");
             }
